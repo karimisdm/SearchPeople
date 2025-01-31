@@ -5,25 +5,56 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style>
+        .flex {
+            display: flex;
+        }
+    </style>
 </head>
 
 <body>
     <div id="app">
-        <div>
-            <label for="search">Search</label>
-            <input v-model="query" type="text" id="search" />
-            <button @click="search">Search</button>
-            <input v-model="queryJob" type="text" id="jobSearch" />
+        <div class="flex">
+            <div>
+                <label for="search">Search</label>
+                <input v-model="query" type="text" id="search" placeholder="Job Title"/>
+            </div>
+            <div>
+                <label for="male">Male</label>
+                <input v-model="genderQuery" type="radio" name="gender" value="Male" />
+                <label for="female">FeMale</label>
+                <input v-model="genderQuery" type="radio" name="gender" value="Female" />
+
+            </div>
         </div>
+
+
         <ul>
-            <li v-for="person in people">{{person.name}}</li>
+            <li v-for="person in filteredPeople">
+                <div>
+                    <div>
+                        <strong> {{person.name}} : </strong>
+                        <small>{{person.gender}}</small>
+                    </div>
+                    <small>
+                        (
+                        {{person.jobs.join(' - ')}}
+                        )
+                    </small>
+
+                </div>
+
+            </li>
         </ul>
+        <hr />
+        Listed by gender:
         <ul>
-            <li v-for="person in filteredPeople">{{person}}</li>
+            <li v-for="people in filteredGender">
+                {{people.name}}
+
+            </li>
         </ul>
-        <ul>
-            <li v-for="person in findJobs">{{person.jobs}}</li>
-        </ul>
+
 
     </div>
 </body>
@@ -96,42 +127,39 @@
                 }
             ];
             const query = ref("");
-            const queryJob = ref("");
-            const result = ref(people);
-            const search = () => {
-                people.filter((person) => {
-                    return person.name
-                        .toLowerCase()
-                        .includes(query.value.toLowerCase().trim());
-                });
-            }
-            watch(query, (newValue, oldValue) => {
-                search()
-            });
+            const genderQuery = ref("")
+            // const search = () => {
+            //     people.filter((person) => {
+            //         return person.name
+            //             .toLowerCase()
+            //             .includes(query.value.toLowerCase().trim());
+            //     });
+            // }
+            // watch(query, (newValue, oldValue) => {
+            //     search()
+            // });
+            //search by job
             const filteredPeople = computed(() => {
                 return people.filter((person) => {
-                    return person.name.toLowerCase()
-                        .includes(query.value.toLowerCase().trim());
+                    return person.jobs.some((job) => {
+                        return job.toLowerCase().includes(query.value.toLowerCase().trim());
+                    });
+
                 });
             });
-            const findJobs = computed(() => {
+            const filteredGender = computed(() => {
                 return people.filter((person) => {
-                    return person.jobs.some((job) => {
-                        return job.toLowerCase().includes(queryJob.value.toLowerCase().trim());
-                    })
+                    return genderQuery.value ? person.gender === genderQuery.value : true;
 
-                })
-            })
-
+                });
+            });
 
             return {
                 people,
                 query,
-                search,
                 filteredPeople,
-                result,
-                findJobs,
-                queryJob
+                genderQuery,
+                filteredGender,
             };
         },
 
