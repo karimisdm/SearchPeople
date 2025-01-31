@@ -32,7 +32,7 @@
                     <option disabled></option>
                     <option v-for="job in jobTitle" :value="job">{{job}}</option>
                 </select>
-        
+
                 <ul>
                     <li v-for="person in filteredJobPeople">{{person.name}}:{{person.jobs.join(',')}}</li>
                 </ul>
@@ -43,7 +43,8 @@
                 <div>
                     <div>
                         <strong> {{person.name}} : </strong>
-                        <small :style="`background: ${person.gender === 'Male'? 'blue': 'pink'}`">{{person.gender}}</small>
+                        <small
+                            :style="`background: ${person.gender === 'Male'? 'blue': 'pink'}`">{{person.gender}}</small>
                     </div>
                     <small>
                         (
@@ -63,8 +64,6 @@
 
             </li>
         </ul>
-
-
     </div>
 </body>
 <script src="./vue.global.js"></script>
@@ -138,7 +137,7 @@
             const query = ref("");
             const genderQuery = ref("");
             const queryJob = ref("");
-          
+
             //search by job
             const filteredPeople = computed(() => {
                 return people.filter((person) => {
@@ -162,9 +161,21 @@
                     });
                 });
             });
-            const jobTitle = computed(()=> {
-                return people.flatMap(p => p.jobs);
+
+
+            const jobTitle = computed(() => {
+                const arrJob = [];
+                people.forEach((person) => {
+                    person.jobs.forEach((job) => {
+                        if (!arrJob.some(j => j === job)) {
+                            arrJob.push(job);
+                        }
+                    });
+                });
+                return arrJob;
+                // return people.flatMap(p => p.jobs);
             });
+
 
             return {
                 people,
@@ -174,7 +185,7 @@
                 filteredGender,
                 queryJob,
                 filteredJobPeople,
-                jobTitle
+                jobTitle,
             };
         },
 
