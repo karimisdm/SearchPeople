@@ -17,7 +17,7 @@
     <div id="app">
         <div class="flex">
             <div>
-                <label for="search">Search</label>
+                <label for="search">Search </label>
                 <input v-model="query" type="text" id="search" placeholder="Job Title" />
             </div>
             <div>
@@ -30,7 +30,7 @@
             <div>
                 <select v-model="queryJob">
                     <option disabled></option>
-                    <option v-for="job in people.flatMap(p => p.jobs)" :value="job">{{job}}</option>
+                    <option v-for="job in jobTitle" :value="job">{{job}}</option>
                 </select>
         
                 <ul>
@@ -138,16 +138,7 @@
             const query = ref("");
             const genderQuery = ref("");
             const queryJob = ref("");
-            // const search = () => {
-            //     people.filter((person) => {
-            //         return person.name
-            //             .toLowerCase()
-            //             .includes(query.value.toLowerCase().trim());
-            //     });
-            // }
-            // watch(query, (newValue, oldValue) => {
-            //     search()
-            // });
+          
             //search by job
             const filteredPeople = computed(() => {
                 return people.filter((person) => {
@@ -168,9 +159,12 @@
                 return people.filter((person) => {
                     return person.jobs.some((job) => {
                         return job.includes(queryJob.value);
-                    })
-                })
-            })
+                    });
+                });
+            });
+            const jobTitle = computed(()=> {
+                return people.flatMap(p => p.jobs);
+            });
 
             return {
                 people,
@@ -179,7 +173,8 @@
                 genderQuery,
                 filteredGender,
                 queryJob,
-                filteredJobPeople
+                filteredJobPeople,
+                jobTitle
             };
         },
 
