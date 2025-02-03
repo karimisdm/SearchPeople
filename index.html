@@ -66,9 +66,11 @@
         </ul>
     </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
 <script src="./vue.global.js"></script>
 <script>
     const { createApp, ref, watch, computed } = Vue;
+    const { uniq } = _;
 
     createApp({
         setup() {
@@ -164,16 +166,19 @@
 
 
             const jobTitle = computed(() => {
-                const arrJob = [];
-                people.forEach((person) => {
-                    person.jobs.forEach((job) => {
-                        if (!arrJob.some(j => j === job)) {
-                            arrJob.push(job);
-                        }
-                    });
-                });
-                return arrJob;
-                // return people.flatMap(p => p.jobs);
+                
+                return uniq(people.flatMap(person => person.jobs));
+
+                //before use from Lodash
+                // const arrJob = [];
+                // people.forEach((person) => {
+                //     person.jobs.forEach((job) => {
+                //         if (!arrJob.some(j => j === job)) {
+                //             arrJob.push(job);
+                //         }
+                //     });
+                // });
+                // return arrJob;
             });
 
 
